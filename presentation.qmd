@@ -1,0 +1,290 @@
+---
+title: "Building Agentic Workflows in R with axolotr"
+author: "Matthew Hirschey"
+date: "2025-08-09"
+format:
+  revealjs:
+    theme: [default, custom.scss]
+    slide-number: true
+    footer: "UseR! 2025"
+    logo: "https://raw.githubusercontent.com/heurekalabsco/axolotr/main/man/figures/logo.png"
+    code-line-numbers: false
+    highlight-style: github
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## The Challenge: LLMs in R {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+**Multiple APIs**
+
+- OpenAI
+- Anthropic  
+- Google
+- Groq
+- ...and more
+:::
+
+::: {.column width="50%"}
+**Different Requirements**
+
+- Authentication methods
+- Request formats
+- Response structures
+- Error handling
+- Rate limits
+:::
+
+::::
+
+::: {.fragment}
+### We need a unified approach! 🎯
+:::
+
+## Agents vs Agentic Workflows
+
+```{mermaid}
+%%{init: {'theme':'base', 'themeVariables': { 'fontSize': '16px'}}}%%
+flowchart LR
+    subgraph "Agent"
+        A[Autonomous Entity] --> B[Goals]
+        B --> C[Memory]
+        C --> D[Tools]
+        D --> A
+    end
+    
+    subgraph "Agentic Workflow"
+        E[Task] --> F[LLM Call]
+        F --> G[Action]
+        G --> H{Error?}
+        H -->|Yes| F
+        H -->|No| I[Next Task]
+    end
+```
+
+::: {.incremental}
+- **Agents**: Full autonomy, complex systems
+- **Agentic Workflows**: Task-specific, practical, controllable
+:::
+
+## Introducing axolotr
+
+```{r}
+#| echo: false
+library(axolotr)
+library(tidyverse)
+```
+
+::: {.panel-tabset}
+
+### Simple Interface
+
+```{r}
+#| eval: false
+# One function to rule them all
+response <- ask("What is the capital of France?")
+
+# Choose your model
+response <- ask("Explain R factors", model = "claude")
+response <- ask("Explain R factors", model = "gpt-4o")
+response <- ask("Explain R factors", model = "gemini")
+```
+
+### Model Flexibility
+
+```{r}
+#| eval: false
+# Generic providers
+ask("Your prompt", model = "anthropic")  # Claude 3.7 Sonnet
+ask("Your prompt", model = "openai")     # GPT-4o
+ask("Your prompt", model = "google")     # Gemini 1.5 Pro
+
+# Specific versions
+ask("Your prompt", model = "claude-3-7-sonnet-latest")
+ask("Your prompt", model = "gpt-4o")
+ask("Your prompt", model = "llama3-70b-8192")
+```
+
+:::
+
+## Problem: Manual EDA is Repetitive
+
+Every analysis starts the same way:
+
+```{r}
+#| eval: false
+data <- read_csv("data.csv")
+glimpse(data)
+summary(data)
+# Plot distributions...
+# Check correlations...
+# Look for missing values...
+# Create visualizations...
+```
+
+::: {.fragment .fade-in}
+### What if an LLM could do this for us? 🤔
+:::
+
+## Solution Architecture
+
+```{mermaid}
+%%{init: {'theme':'base', 'themeVariables': { 'fontSize': '14px'}}}%%
+flowchart TB
+    A[Dataset] --> B[Auto-EDA Function]
+    B --> C[Generate Plan<br/>with Claude]
+    C --> D[For Each Task]
+    D --> E[Generate Code<br/>with Claude]
+    E --> F[Review Code<br/>with GPT-4]
+    F --> G{Approved?}
+    G -->|No| E
+    G -->|Yes| H[Execute Code]
+    H --> I{Success?}
+    I -->|No| J[Feed Error Back]
+    J --> E
+    I -->|Yes| K[Next Task]
+    K --> D
+```
+
+## Key Implementation: Error-Correcting Loop
+
+```{r}
+#| eval: false
+#| code-line-numbers: "|4-5|6-7|8-10|11-14"
+for (attempt in 1:max_attempts) {
+  # Generate code with context about previous errors
+  code <- generate_analysis_code(task, data_name, error_msg, 
+                                model = generation_model)
+  
+  # Review generated code before execution
+  review <- review_code(code, task, model = review_model)
+  
+  if (!grepl("APPROVED", review)) {
+    error_msg <- review
+    next  # Try again
+  }
+  
+  # Execute safely
+  result <- safe_eval(code)
+  
+  if (result$success) {
+    break  # Success!
+  } else {
+    error_msg <- result$error  # Feed back for next attempt
+  }
+}
+```
+
+## Live Demo: Auto-EDA in Action
+
+```{r}
+#| eval: false
+# Load our auto-EDA tool
+source("auto_eda.R")
+
+# Run on built-in dataset
+auto_eda(mtcars, 
+         generation_model = "claude",
+         review_model = "gpt-4o")
+```
+
+::: {.fragment}
+### Watch for:
+- Plan generation
+- Code creation & review
+- Error correction
+- Multi-model collaboration
+- **NEW**: All outputs saved to `auto_eda_output/` 📁
+:::
+
+## Multi-Model Usage Example
+
+```{r}
+#| eval: false
+#| code-line-numbers: "|2-3|5-8|10-13"
+# Use Claude for creative tasks
+plan <- ask("Create an analysis plan for this dataset", 
+           model = "claude")
+
+# Use GPT-4 for code review
+review <- ask(
+  paste("Review this R code:", code, "Is it safe to run?"),
+  model = "gpt-4o"
+)
+
+# Use Groq for fast iterations
+quick_fix <- ask(
+  paste("Fix this error:", error_msg),
+  model = "llama3-70b-8192"  # Via Groq
+)
+```
+
+## axolotr vs ellmer
+
+| Feature | axolotr | ellmer |
+|---------|---------|---------|
+| **Design** | Functional | Object-Oriented (R6) |
+| **Interface** | `ask()` | `chat$chat()` |
+| **State** | Stateless | Stateful conversations |
+| **Integration** | Standalone | Tidyverse ecosystem |
+| **Learning Curve** | Minimal | Moderate |
+
+::: {.fragment}
+### Choose based on your needs! Both are excellent tools 🛠️
+:::
+
+## Takeaways
+
+::: {.incremental}
+1. **Agentic workflows** make LLMs practical for everyday R tasks
+
+2. **axolotr** provides dead-simple multi-provider access
+
+3. **Error handling** is key - LLMs make mistakes!
+
+4. **Multi-model** approaches leverage each model's strengths
+
+5. **Start simple** - even basic automation saves time
+:::
+
+## Resources & Next Steps
+
+### 📦 Get Started
+```r
+devtools::install_github("heurekalabsco/axolotr")
+```
+
+### 📚 Learn More
+- GitHub: [github.com/heurekalabsco/axolotr](https://github.com/heurekalabsco/axolotr)
+- This talk: [github.com/matthewhirschey/useR_talk_axolotr](https://github.com/matthewhirschey/useR_talk_axolotr)
+
+### 💡 Ideas to Try
+- Automated report generation
+- Code documentation
+- Data validation workflows
+- Test generation
+
+## Thank You! Questions? {.center}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+![](https://raw.githubusercontent.com/heurekalabsco/axolotr/main/man/figures/logo.png){width=300}
+:::
+
+::: {.column width="50%"}
+### Matthew Hirschey
+- Associate Professor, Duke University
+- Director, Center for Computational Thinking
+
+### Contact
+- GitHub: @matthewhirschey
+- Email: matthew.hirschey@duke.edu
+:::
+
+::::

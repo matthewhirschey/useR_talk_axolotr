@@ -1,0 +1,25 @@
+# R files
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+
+# IMPORTANT: Never commit API keys!
+.Renviron
+
+# Output directories
+auto_eda_output/
+
+# Mac system files
+.DS_Store
+
+# Temporary files
+*~
+*.swp
+
+# Rendered presentation files
+presentation.html
+presentation_files/
+
+# R package building
+*.tar.gz

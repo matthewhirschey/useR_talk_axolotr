@@ -1,0 +1,12 @@
+Building Agentic Workflows in R with axolotr
+
+More info
+Large Language Models (LLMs) have revolutionized how we approach computational tasks, yet R users often face significant barriers when integrating these powerful tools into their workflows. Managing multiple API providers, handling authentication, and orchestrating complex interactions typically requires substantial boilerplate code and specialized knowledge across different service ecosystems. This presentation introduces axolotr, an R package that provides a unified interface for interacting with leading LLM APIs including OpenAI’s GPT, Google’s Gemini, Anthropic’s Claude, and Groq. Through progressive examples of increasing complexity, we demonstrate how R users can seamlessly incorporate LLMs into their data science workflows - from simple one-off queries to sophisticated agentic systems. We begin with fundamental LLM interactions, showing how axolotr simplifies credential management and API calls across providers. Next, we explore function-based implementations that transform raw LLM capabilities into reusable analytical tools. Finally, we demonstrate how to build true agentic workflows where multiple LLM calls work together to maintain state, make decisions, and accomplish complex tasks autonomously. Attendees will learn: - How to quickly incorporate LLMs into existing R projects using a consistent interface - Techniques for creating functions that leverage LLM capabilities for data analysis and interpretation - Approaches for building agentic systems that can reason about data, maintain context, and operate iteratively - Practical strategies for managing costs, optimizing performance, and selecting appropriate models for different tasks This presentation provides both newcomers and experienced R users with the practical knowledge needed to harness the power of LLMs through a streamlined, R-native approach. By the end, attendees will have a roadmap for transforming their interaction with LLMs from simple API calls to sophisticated autonomous workflows that can dramatically enhance productivity and analytical capabilities.
+
+Date and time: Sat, Aug 9, 2025 - 14:45–16:00
+
+Author(s): Matthew Hirschey
+
+Keyword(s): llms, ai, agents, natural language processing, workflow automation
+
+Video recording available after conference: ✅
