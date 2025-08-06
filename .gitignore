@@ -23,3 +23,7 @@ presentation_files/
 
 # R package building
 *.tar.gz
+/.quarto/
+
+# Claude configuration
+.claude/

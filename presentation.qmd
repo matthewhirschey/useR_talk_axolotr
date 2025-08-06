@@ -8,18 +8,113 @@ format:
     slide-number: true
     footer: "UseR! 2025"
     logo: "https://raw.githubusercontent.com/heurekalabsco/axolotr/main/man/figures/logo.png"
-    code-line-numbers: false
     highlight-style: github
+    width: 1050
+    height: 700
+    margin: 0.1
+    mermaid: 
+      theme: default
 execute:
   echo: true
   warning: false
   message: false
+knitr:
+  opts_chunk:
+    mermaid.echo: false
 ---
+
+## LLMs Are Everywhere
+
+::: columns
+::: {.column width="60%"}
+### The AI Revolution in Coding
+
+- ChatGPT, Claude, Copilot...
+- Natural language → Working code
+- Debug errors in seconds
+- Generate entire functions
+- Explain complex algorithms
+
+::: {.fragment}
+**But how do we integrate them into R workflows?**
+:::
+:::
+
+::: {.column width="40%"}
+### Common Use Cases
+
+- 📊 Data analysis
+- 🐛 Debugging
+- 📝 Documentation
+- 🔄 Refactoring
+- 🧪 Test writing
+- 📈 Visualization
+:::
+:::
+
+## Understanding AI Agents
+
+::: {.hide-source}
+```{mermaid}
+%%{init: {'theme':'default'}}%%
+flowchart LR
+    A[Agent] --> B[Think]
+    B --> C[Act]
+    C --> D[Observe]
+    D --> B
+    
+    style A fill:#1a237e,color:#fff
+    style B fill:#e3f2fd
+    style C fill:#e3f2fd
+    style D fill:#e3f2fd
+```
+:::
+
+### The Think-Act-Observe Loop
+
+::: {.incremental}
+- **Think**: Analyze the situation and plan next steps
+- **Act**: Execute actions using available tools
+- **Observe**: Evaluate results and adapt
+- **Repeat**: Continue until goal is achieved
+:::
+
+::: {.fragment}
+**Agents are autonomous, but that's not always what we need...**
+:::
+
+## Workflow Evolution {.smaller}
+
+| Feature | Traditional Workflow | Agentic Workflow | Full Agent |
+|---------|---------------------|------------------|------------|
+| **LLM Integration** | ❌ None | ✅ Yes | ✅ Yes |
+| **Autonomy** | ❌ None | ✅ Task-specific | ✅ Full |
+| **Goal Setting** | ❌ Human-defined | ❌ Human-defined | ✅ Self-directed |
+| **Memory** | ❌ None | ❌ None | ✅ Persistent |
+| **Error Handling** | ❌ Manual | ✅ Self-correcting | ✅ Self-correcting |
+| **Tool Usage** | ❌ Predefined | ✅ Dynamic | ✅ Dynamic |
+| **Complexity** | 🟢 Low | 🟡 Medium | 🔴 High |
+| **Control** | 🟢 Full | 🟢 High | 🔴 Limited |
+
+
+## 🎯 Agentic Workflows
+
+::: columns
+::: {.column width="50%"}
+- Practical balance of automation and control
+- Perfect for data analysis tasks
+- Easy to implement and debug
+:::
+
+::: {.column width="50%"}
+![](images/platypus.jpg)
+:::
+:::
+
 
 ## The Challenge: LLMs in R {.smaller}
 
-:::: {.columns}
-
+::: columns
 ::: {.column width="50%"}
 **Multiple APIs**
 
@@ -39,49 +134,25 @@ execute:
 - Error handling
 - Rate limits
 :::
-
-::::
+:::
 
 ::: {.fragment}
 ### We need a unified approach! 🎯
-:::
-
-## Agents vs Agentic Workflows
-
-```{mermaid}
-%%{init: {'theme':'base', 'themeVariables': { 'fontSize': '16px'}}}%%
-flowchart LR
-    subgraph "Agent"
-        A[Autonomous Entity] --> B[Goals]
-        B --> C[Memory]
-        C --> D[Tools]
-        D --> A
-    end
-    
-    subgraph "Agentic Workflow"
-        E[Task] --> F[LLM Call]
-        F --> G[Action]
-        G --> H{Error?}
-        H -->|Yes| F
-        H -->|No| I[Next Task]
-    end
-```
-
-::: {.incremental}
-- **Agents**: Full autonomy, complex systems
-- **Agentic Workflows**: Task-specific, practical, controllable
 :::
 
 ## Introducing axolotr
 
 ```{r}
 #| echo: false
-library(axolotr)
-library(tidyverse)
+#| message: false
+#| warning: false
+suppressPackageStartupMessages({
+  library(axolotr)
+  library(tidyverse)
+})
 ```
 
-::: {.panel-tabset}
-
+::: panel-tabset
 ### Simple Interface
 
 ```{r}
@@ -109,7 +180,6 @@ ask("Your prompt", model = "claude-3-7-sonnet-latest")
 ask("Your prompt", model = "gpt-4o")
 ask("Your prompt", model = "llama3-70b-8192")
 ```
-
 :::
 
 ## Problem: Manual EDA is Repetitive
@@ -127,35 +197,37 @@ summary(data)
 # Create visualizations...
 ```
 
-::: {.fragment .fade-in}
+::: {.fragment}
 ### What if an LLM could do this for us? 🤔
 :::
 
 ## Solution Architecture
 
+::: {.hide-source}
 ```{mermaid}
-%%{init: {'theme':'base', 'themeVariables': { 'fontSize': '14px'}}}%%
-flowchart TB
-    A[Dataset] --> B[Auto-EDA Function]
-    B --> C[Generate Plan<br/>with Claude]
-    C --> D[For Each Task]
-    D --> E[Generate Code<br/>with Claude]
-    E --> F[Review Code<br/>with GPT-4]
-    F --> G{Approved?}
+%%{init: {'theme':'default'}}%%
+flowchart LR
+    A[Dataset] --> B[Auto-EDA<br/>Function]
+    B --> C[Generate<br/>Plan]
+    C --> D[For Each<br/>Task]
+    D --> E[Generate<br/>Code]
+    E --> F[Review<br/>Code]
+    F --> G{OK?}
     G -->|No| E
-    G -->|Yes| H[Execute Code]
+    G -->|Yes| H[Execute]
     H --> I{Success?}
-    I -->|No| J[Feed Error Back]
+    I -->|No| J[Error<br/>Feedback]
     J --> E
-    I -->|Yes| K[Next Task]
+    I -->|Yes| K[Next<br/>Task]
     K --> D
 ```
+:::
 
 ## Key Implementation: Error-Correcting Loop
 
 ```{r}
 #| eval: false
-#| code-line-numbers: "|4-5|6-7|8-10|11-14"
+#| code-line-numbers: "2-4|6-7|9-11|14-19"
 for (attempt in 1:max_attempts) {
   # Generate code with context about previous errors
   code <- generate_analysis_code(task, data_name, error_msg, 
@@ -206,7 +278,7 @@ auto_eda(mtcars,
 
 ```{r}
 #| eval: false
-#| code-line-numbers: "|2-3|5-8|10-13"
+#| code-line-numbers: "1-3|5-8|10-13"
 # Use Claude for creative tasks
 plan <- ask("Create an analysis plan for this dataset", 
            model = "claude")
@@ -255,7 +327,8 @@ quick_fix <- ask(
 ## Resources & Next Steps
 
 ### 📦 Get Started
-```r
+```{r}
+#| eval: false
 devtools::install_github("heurekalabsco/axolotr")
 ```
 
@@ -271,8 +344,7 @@ devtools::install_github("heurekalabsco/axolotr")
 
 ## Thank You! Questions? {.center}
 
-:::: {.columns}
-
+::: columns
 ::: {.column width="50%"}
 ![](https://raw.githubusercontent.com/heurekalabsco/axolotr/main/man/figures/logo.png){width=300}
 :::
@@ -286,5 +358,4 @@ devtools::install_github("heurekalabsco/axolotr")
 - GitHub: @matthewhirschey
 - Email: matthew.hirschey@duke.edu
 :::
-
-::::
+:::

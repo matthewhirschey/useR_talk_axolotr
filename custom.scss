@@ -60,4 +60,22 @@ $code-color: #333333;
   .mermaid {
     text-align: center;
   }
+  
+  // Hide mermaid source code blocks
+  .hide-source .sourceCode {
+    display: none !important;
+  }
+  
+  // Ensure mermaid diagrams are centered and use full width
+  .mermaid svg {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+  }
+  
+  // Make mermaid containers use full width
+  .mermaid {
+    width: 100%;
+  }
 }
