@@ -4,11 +4,15 @@
 .Rproj.user/
 *.Rproj
 
+# PDF files
+*.pdf
+
 # IMPORTANT: Never commit API keys!
 .Renviron
 
 # Output directories
 auto_eda_output/
+auto_eda_ellmer_output/
 
 # Mac system files
 .DS_Store

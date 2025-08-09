@@ -12,7 +12,7 @@ source("auto_eda.R")
 cat("Testing auto_eda with iris dataset\n")
 
 # You can test with different model combinations
-auto_eda(iris, max_attempts = 2, generation_model = "claude", review_model = "gpt-4o")
+auto_eda(iris, max_attempts = 2, generation_model = "claude", review_model = "gpt-4o") #mtcars
 
 # # For a quick test without API calls, here's a mock version
 # test_auto_eda_mock <- function() {

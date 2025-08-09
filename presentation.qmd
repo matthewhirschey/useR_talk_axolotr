@@ -34,10 +34,6 @@ knitr:
 - Debug errors in seconds
 - Generate entire functions
 - Explain complex algorithms
-
-::: {.fragment}
-**But how do we integrate them into R workflows?**
-:::
 :::
 
 ::: {.column width="40%"}
@@ -48,7 +44,9 @@ knitr:
 - 📝 Documentation
 - 🔄 Refactoring
 - 🧪 Test writing
-- 📈 Visualization
+:::
+::: {.fragment}
+**But how do we integrate them into R workflows?**
 :::
 :::
 
@@ -58,7 +56,7 @@ knitr:
 ```{mermaid}
 %%{init: {'theme':'default'}}%%
 flowchart LR
-    A[Agent] --> B[Think]
+    A[Agent] --> B[Plan]
     B --> C[Act]
     C --> D[Observe]
     D --> B
@@ -70,10 +68,10 @@ flowchart LR
 ```
 :::
 
-### The Think-Act-Observe Loop
+### The Plan-Act-Observe Loop
 
 ::: {.incremental}
-- **Think**: Analyze the situation and plan next steps
+- **Plan/Think**: Analyze the task and plan next steps
 - **Act**: Execute actions using available tools
 - **Observe**: Evaluate results and adapt
 - **Repeat**: Continue until goal is achieved
@@ -157,13 +155,9 @@ suppressPackageStartupMessages({
 
 ```{r}
 #| eval: false
-# One function to rule them all
-response <- ask("What is the capital of France?")
+# One simple function
 
-# Choose your model
-response <- ask("Explain R factors", model = "claude")
-response <- ask("Explain R factors", model = "gpt-4o")
-response <- ask("Explain R factors", model = "gemini")
+response <- ask("Where is Paris?")
 ```
 
 ### Model Flexibility
@@ -182,7 +176,7 @@ ask("Your prompt", model = "llama3-70b-8192")
 ```
 :::
 
-## Problem: Manual EDA is Repetitive
+## Use Case: Auto-EDA
 
 Every analysis starts the same way:
 
@@ -223,7 +217,7 @@ flowchart LR
 ```
 :::
 
-## Key Implementation: Error-Correcting Loop
+## Key Implementation: Error-Correcting Loop {.smaller}
 
 ```{r}
 #| eval: false
@@ -266,12 +260,12 @@ auto_eda(mtcars,
 ```
 
 ::: {.fragment}
-### Watch for:
+### Key Steps:
 - Plan generation
 - Code creation & review
 - Error correction
 - Multi-model collaboration
-- **NEW**: All outputs saved to `auto_eda_output/` 📁
+- All outputs saved to `auto_eda_output/` 📁
 :::
 
 ## Multi-Model Usage Example
@@ -287,12 +281,6 @@ plan <- ask("Create an analysis plan for this dataset",
 review <- ask(
   paste("Review this R code:", code, "Is it safe to run?"),
   model = "gpt-4o"
-)
-
-# Use Groq for fast iterations
-quick_fix <- ask(
-  paste("Fix this error:", error_msg),
-  model = "llama3-70b-8192"  # Via Groq
 )
 ```
 
